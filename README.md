@@ -7,6 +7,7 @@ First approach was to read latex/lyx files, but this didn't work very well, beca
 
 Current approach is to read a normal text file and an ignore_words file and analyse the text.
 
+This is a quick & dirty approach to solve this issue for me ;-)
 # History
 | date | version | information |
 |---|:-:|---|
