@@ -17,7 +17,7 @@ This is a quick & dirty approach to solve this issue for me ;-)
 > The examples used are real excerpts from bachelor's or master's theses. They are subject to the copy right of the respective author.
 In principle, these are only excerpts.
 
-# ignore_words
+# File: ignore_words
 every row should be a word or an regulare expresseion. If a word inside the text file hits agains an ignore_word or a regex, this word will be ignored.
 
 ## Building a RegEx object list
