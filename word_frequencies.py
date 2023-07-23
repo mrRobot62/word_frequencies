@@ -14,7 +14,7 @@ table = PrettyTable()
 table.junction_char = '|'
 
 
-table.field_names = ["normalized Word", "Count", "Word(s)"]
+table.field_names = ["normalized word", "count", "word(s)"]
 
 
 parser = argparse.ArgumentParser(
@@ -24,7 +24,7 @@ parser = argparse.ArgumentParser(
         )
 parser.add_argument("--file", required=True, dest="file", help="select file to analyze")
 parser.add_argument("--exclude", dest="stopwords", help="use this file to exclude words")
-#parser.add_argument("--lyx", action='store_true', help="if set, only text inside /begin_layout and /end_layout is scanned")
+parser.add_argument("--lyx", action='store_true', help="if set, only text inside /begin_layout and /end_layout is scanned")
 parser.add_argument("--limit", type=int, dest='limit', default=100, help="set limit for table output, default=100")
 parser.add_argument("-v", action='count', default=0, dest="verbose", help="Verbose output; -v default, -vv more output, -vvv maximum output")
 
@@ -89,7 +89,6 @@ def build_word_list(lines, sep=" "):
 def file_load(file_path, wlist):
     #check if file is present
     if os.path.isfile(file_path):
-        lines = []
         idx = 1
         try:
             with open(file_path, "r") as infile:
@@ -146,4 +145,4 @@ if __name__ == "__main__":
     #print(f"Pairs: {results}")
     #print(f"Number of pairs {len(results)}")
     print(f"\n## List of word frequencies")
-    print(table.get_string(start=2, end=args.limit, sortby="Count", reversesort=True))
+    print(table.get_string(start=2, end=args.limit, sortby="count", reversesort=True))

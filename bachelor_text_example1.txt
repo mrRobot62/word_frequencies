@@ -1,0 +1,206 @@
+Statistical Matching
+- Multiple Imputation und Datenfusion am Beispiel von Daten zu Religiosität und Gesundheit
+- Multiple Imputation and Data Fusion using the example of religiousness and health data
+ZUR ERLANGUNG DES AKADEMISCHEN GRADES BACHELOR OF SCIENCE (B.SC.)
+IN BETRIEBSWIRTSCHAFTSLEHRE
+AM LADISLAUS VON BORTKIEWICZ CHAIR OF STATISTICS DER WIRTSCHAFTSWISSENSCHAFTLICHEN FAKULTÄT DER HUMBOLDT UNIVERSITÄT ZU BERLIN
+  Autor:
+
+Inhaltsverzeichnis
+1 Einführung 3
+2 Vorstellung des Anwendungsbeispiels 5
+3 Imputation der fehlenden Werte 9
+3.1 SinguläreImputation .......................... 14 3.2 MultipleImputation........................... 16 3.3 PraktischeAnwendung:MultipleImputation. . . . . . . . . . . . . . 19
+4 Statistical Matching – Fusion der Datensätze 25
+4.1 DasPrinzipderDatenfusion ...................... 25
+4.2 StatisticalMatching........................... 27 4.2.1 Theorie............................. 27 4.2.2 Evaluation ........................... 31 4.2.3 Anwendungsbereiche...................... 33
+4.3 Praktische Anwendung: Statistical Matching . . . . . . . . . . . . . . 35
+5 Analyse
+6 Schlussbetrachtung
+Anhang
+A R Algorithmen
+A.1 Auffinden statistischer Zwillinge mit Hilfe des Pakets „Matching“
+A.2 ImputationderWerte .......................... 49
+B Zusammenfassung der Match Balance 51
+C Legende zur Daten-CD Literaturverzeichnis
+52 55
+2
+. . 47
+39 45 47
+47
+
+Kapitel 1 Einführung
+Errors using inadequate data are much less than those using no data at all.
+Charles Babbage (ca. 1850)
+ Statistik hat in der Soziologie eine weitreichende Geschichte. Angefangen bei Volkszählungen, über Bevölkerungsstatistiken zu Geburten, Eheschließungen und To- desfällen, bis hin zu detaillierten Meinungsumfragen, steht heute eine Vielzahl an sta- tistischen Methoden und Daten zur Verfügung, um soziologische Entwicklungen und Zusammenhänge zu erforschen. Häufig jedoch sind die Fragestellungen, die mithilfe einer Datenanalyse erörtert werden sollen, sehr komplex und zusätzlich ist die betref- fende Grundgesamtheit oft sehr groß. Das hat zur Folge, dass eine eigens durchgeführ- te Datenerhebung, welche alle interessierenden Daten abfragt, sehr aufwändig ist. Um Zeit und Kosten zu sparen, kann auf eine Methode zurückgegriffen werden, die nur noch die Erhebung eines Teildatensatzes erfordert, welcher dann mit einem bestehen- den Datensatz fusioniert wird, der die nicht abgefragten Daten enthält. Eine Technik dieser Datenfusion ist das Statistical Matching.
+Ziel des Statistical Matchings ist die systematische Zusammenführung zweier Da- tensätze. Es ist ein nützliches Werkzeug, um Analysen über zwei (oder mehrere) Va- riablen zu machen, welche nicht im gleichen sondern in zwei unterschiedlichen Da- tensätzen vorliegen. Zur Veranschaulichung ist hier der Fall einer Untersuchung des Zusammenhangs zwischen den Variablen V1 und V2 betrachtet. Es liegt allerdings kei- ne Umfrage vor, welche beide Variablen erfasst hat. Anstatt dessen liegt ein Datensatz D1 mit der Variablen V1 vor, und ein Datensatz D2, in welchem unter anderem Daten der Variable V2 erhoben wurden. Darüber hinaus finden sich gemeinsame Variablen, welche in beiden Datensätzen vorkommen, die aber nicht im Fokus der Analyse ste- hen. Es sei nicht davon auszugehen, dass in D1 und D2 die gleichen Personen befragt
+3
+
+wurden. Wie können also Zusammenhänge zwischen V1 und V2 analysiert werden, oh- ne dass auch nur eine einzige Person Aussagen zu beiden Variablen getroffen hat? Die Lösung liegt darin, dass die Datensätze anhand der in beiden Datensätzen vorkommen- den Variablen fusioniert werden, so dass ein Datensatz entsteht, welcher sowohl V1 als auch V2 erfasst.
+In dieser Arbeit werden sowohl die Theorie des Statistical Matchings als auch die vorbereitenden Schritte, die zum Matching notwendig sind, erörtert. An einem prakti- schen Beispiel soll die Anwendung jedes einzelnen Schrittes verdeutlicht werden.
+Einleitend sollen im folgenden Kapitel zunächst das praktische Anwendungsbei- spiel und seine Datenquelle erläutert werden. Nachfolgend wird in Kapitel 3 auf die Vorbereitung der Datensätze bei Vorliegen von Antwortausfall eingegangen. Eine aus- führliche Beschreibung des Mechanismus von Statistical Matching findet sich in Ka- pitel 4. Zuletzt wird das praktische Anwendungsbeispiel durch einen Analyseansatz abgeschlossen (Kapitel 5) und sowohl ein Fazit der gewonnenen Erkenntnisse gezogen als auch ein Ausblick auf weiterführende Untersuchungen gegeben (Kapitel 6).
+4
+
+Kapitel 2
+Vorstellung des Anwendungsbeispiels
+I don’t think there’s any doubt that people derive enormous comfort from religion, and they should continue to do that. What they shouldn’t expect is that religious activity is going to promote their health.
+Richard Sloan et al. (2000)
+In Zusammenarbeit des Lehrstuhls für Praktische Theologie und Religionspädago- gik und des Ladislaus von Bortkiewicz Lehrstuhls für Statistik der Humboldt Univer- sität zu Berlin sollte die Frage nach einem Zusammenhang zwischen „Religiosität“ und „Gesundheit“ erörtert werden. Eine solche Fragestellung wäre beispielsweise für eine Krankenkasse von Interesse, die sich auf die Versicherung kirchlicher Mitarbeiter spezialisiert hat. Als Datengrundlage für die oben genannte Untersuchung wurde ein Datensatz benötigt, der die beiden relevanten Themen „Religiosität“ und „Gesundheit“ erfasst hatte. Dies stellte sich als Problem heraus, da ein ebensolcher Datensatz nicht vorlag. Aus Versichertendaten einer Krankenversicherung hätte man prüfen können, ob sich das Krankenbild bei Versicherten in einem kirchlichen Amt anders verhält als bei den übrigen Versicherten. Derartige Informationen unterliegen jedoch dem Daten- schutz und konnten somit nicht herangezogen werden. Darüber hinaus wurde in den Versichertendaten nicht Religiosität, sondern nur der ausgeübte Beruf (z. B. Priester) erhoben. Die Ausübung eines kirchlichen Amtes ist vielleicht ein Indikator, aber kein Maß für Religiosität.
+Da also kein geeigneter Datensatz vorlag, musste ein ebensolcher mithilfe von Sta- tistical Matching erzeugt werden.
+Als Datenquellen wurden zwei Datensätze der Allgemeinen Bevölkerungsumfra- ge der Sozialwissenschaften (ALLBUS) herangezogen (GESIS, 2010). ALLBUS ist ein Datengenerierungsprogramm, welches regelmäßig Daten über Einstellungen, Ver- haltensweisen und Sozialstruktur der Bevölkerung in der Bundesrepublik Deutschland
+ 5
+
+erhebt. Bei jedem Durchlauf des Programms (etwa alle zwei Jahre) wird eine reprä- sentative Stichprobe aus der Bevölkerung (etwa 3000 Personen) gezogen und in per- sönlichen Interviews befragt. Als Grundgesamtheit dieser Ziehung dient die erwachse- ne Wohnbevölkerung in West- und Ostdeutschland. Kurz nach der Wiedervereinigung (1992) wurde die Anzahl der Interviews auf 3500 erhöht, wovon 2400 Interviews in in West- und 1100 Interviews in Ostdeutschland geführt werden. Dies bedeutet, dass Bewohner der neuen Bundesländer in der ALLBUS-Stichprobe überrepräsentiert sind. In Anbetracht des Untersuchungsziel, kann dies in anschließenden Analyseschritten von Bedeutung sein, wenn angenomen wird, dass Religion in der ehemaligen DDR eine andere Rolle spielte als in Westdeutschland. Bei der Stichprobenziehung wird ein mehrstufiges Verfahren mit den Auswahlstufen „Gemeinden – Personen“ angewendet.
+Nicht nur bei der Stichprobenziehung, sondern auch inhaltlich decken die ALL- BUS Umfragen ein breites Feld ab. Neben konstanten Fragen, welche in jedem Durch- lauf des Programms gestellt werden (beispielsweise Angaben zu „Alter“, Geschlecht“ oder „Haushaltsnettoeinkommen“), gibt es in jedem Fragenkatalog einen oder mehrere thematische Schwerpunkte, mit welchen sich etwa zwei Drittel der abgefragten Varia- blen befassen. Beispiele für ebensolche Schwerpunkte sind etwa „Politische Partizipa- tion und politische Kultur“ (ALLBUS 20081) oder „Soziale Ungleichheit“ (ALLBUS 20042). Um auf einen Zusammenhang zwischen „Religiosität“ und „Gesundheit“ zu prüfen, wurden in dieser Arbeit die ALLBUS Datensätze mit den inhaltlichen Schwer- punkten „Religion und Weltanschauung“ (ALLBUS 20023) und „Gesundheit und Digi- tal Divide“ (ALLBUS 20044) genutzt. Der ALLBUS-Datensatz aus 2002 enthält 2820 Fälle zu 722 Variablen, während der ALLBUS 2004 je 2946 Fälle zu 898 Variablen aufweist. 343 der Variablen liegen in beiden betrachteten Datensätzen vor. Allerdings kommen diejenigen Variablen, welche für diese Untersuchung interessant sind — also die Variablen zu den Themen „Religiosität“ und „Gesundheit“ — jeweils nur in einem der beiden Datensätze vor. Somit musste der erste Schritt vor Beginn einer Analyse die Zusammenführung beider Datensätze sein. Dies wäre eine relativ einfache Auf- gabe gewesen, wenn davon auszugehen wäre, dass beide Datensätze aus der gleichen Stichprobe resultierten. Da aber bei jeder ALLBUS-Umfrage eine neue Stichprobe aus der Bevölkerung gezogen wird, beziehen sich die Antworten aus dem Datensatz aus 2002 real auf andere statistische Einheiten als die Daten aus der 2004er Umfrage. Da- her mussten die beiden Datensätze mithilfe von Statistical Matching zusammengeführt werden, um einen gemeinsamen Datensatz zu erhalten, welcher alle für diese Untersu-
+1vgl. http://www.gesis.org/dienstleistungen/daten/umfragedaten/allbus/studienprofile/2008/ 2vgl. http://www.gesis.org/dienstleistungen/daten/umfragedaten/allbus/studienprofile/2004/ 3CD: Kapitel 2 – Ausgangsdatensätze/ALLBUS2002
+4CD: Kapitel 2 – Ausgangsdatensätze/ALLBUS2004
+ 6
+
+chung relevanten Variablen erfasste.
+Die Vorgehensweise in dieser Arbeit geschah in den folgenden drei Schritten, wel-
+che schematisch in Abbildung 2.1 dargestellt sind: Da in den betrachteten Datensätzen Antwortausfall vorlag, wurden zunächst die fehlenden Werte der gemeinsamen Va- riablen geschätzt und imputiert, um einen vollständigen Datensatz der gemeinsamen Variablen zu erhalten (vgl. Abb. 2.1a). Danach wurden auch die spezifischen Variablen zu „Religiosität“ und „Gesundheit“ im jeweiligen Datensatz mithilfe der ergänzten ge- meinsamen Variablen vervollständigt (vgl. Abb. 2.1b). Im letzten Schritt sollten die spezifischen Variablen durch das Matching-Verfahren im jeweils anderen Datensatz ergänzt werden (vgl. Abb. 2.1c).
+Im Fokus dieser Arbeit steht dabei nicht die Analyse des Zusammenhangs zwi- schen „Religiosität“ und „Gesundheit“ selbst. Vielmehr soll die Datenvorbereitung, welche eine solche Analyse überhaupt erst möglich macht, im Vordergrund stehen.
+7
+
+  ALLBUS 2002
+g
+(1)
+(a) Schritt 1: Imputation innerhalb der gemeinsamen Variablen
+ALLBUS 2004
+ALLBUS 2002
+(b) Schritt 2: Imputation der spezifischen mithilfe der gemeinsamen Variablen
+ALLBUS 2004
+ALLBUS 2002
+(c) Schritt 3: Datenfusion mithilfe von Statistical Matching
+Abbildung 2.1: Schematische Darstellung der Vorgehensweise im Anwendungsbei- spiel
+Gesundheit
+ALLBUS 2004
+   Religion
+g
+  g
+Gesundheit
+(2)
+    (2)
+Religion
+g
+  Religion
+ g
+Gesundheit
+(3)
+ (3)
+Religion
+ g
+ Gesundheit
+  8
+
+Kapitel 3
+Imputation der fehlenden Werte
+With or without missing data, the goal of a statistical proce- dure should be to make valid and efficient inferences about a population of interest – not to estimate, predict, or recover missing observations nor to obtain the same results that we would have seen with complete data.
+Schafer & Graham (2002)
+Da die Fusion zweier Datensätze anhand ihrer gemeinsamen Variablen erfolgt, ist es wichtig, dass diese gut selektiert und möglichst vollständig sind. Daher sollte im ersten Schritt überlegt werden, welche dieser Variablen als Einflussvariablen in Frage kommen. Hierbei sind einerseits inhaltliche Zusammenhänge zwischen den gemeinsa- men und den zu imputierenden Variablen zu prüfen. Zum anderen sind jedoch auch die Variableneigenschaften (wie z.B. fehlende Werte oder doppelte Informationen) entscheidend. Dieses Kapitel beschäftigt sich mit dem Problem des Antwortausfalls (= Nonresponse) und den Möglichkeiten, diesen durch die Imputation geschätzter Wer- te zu eliminieren.
+Beim Umgang mit Datensätzen ist man häufig vor das Problem fehlender Werte ge- stellt und muss entscheiden, wie man damit umgeht. Das Fehlen von Information kann verschiedene Gründe haben. Neben den Fällen, in welchen Fragen einfach übersehen oder ihre Beantwortung vergessen wurden, kann auch Datenverlust durch technischen Ausfall ein Grund für fehlende Information sein. So können vollständig erhobene Da- ten beispielsweise im Nachhinein zu einem unvollständigen Datensatz führen, da bei der Datenübertragung zufällig Informationen verloren gegangen sind. Ein anderes Bei- spiel wäre eine pharmazeutische Langzeitstudie, bei der Patienten beispielsweise durch Todesfall aus der Studie ausfallen. Ob dieses Ausfallen zufällig auftritt oder nicht, ist in diesem Fall nicht so einfach zu bestimmen.
+Auch mangelnde Antwortbereitschaft der Befragten kann ein Grund für fehlende 9
+ 
+Werte sein. In den betrachteten ALLBUS-Daten schienen die Testpersonen je nach Inhalt mehr oder weniger bereit zu sein, eine Frage zu beantworten. So wies die Va- riable „Geschlecht“ 0 % fehlende Werte auf, während circa jeder sechste der Befrag- ten (17,6 %) keine Angabe zum Haushaltsnettoeinkommen machen wollte. Es ist zu vermuten, dass diese Differenz dadurch begründet ist, dass eine Angabe über den Ver- dienst eine viel privatere ist als eine über das Geschlecht. Daher waren wahrscheinlich weniger Personen bereit, die Frage nach dem Einkommen zu beantworten. Zusätzlich ist anzunehmen, dass die Befragten mit einem höheren Einkommen häufiger eine Ant- wort zum Verdienst verweigern. Somit unterläge dem Antwortausfall eine Struktur, die von anderen Ausprägungen (beobachtet und/oder fehlend) abhängt.
+Dieses Beispiel macht deutlich, dass die Gründe für fehlende Werte nicht ignoriert werden können, da dies eine Verzerrung der Analyse zur Folge hätte. Vielmehr muss die Struktur der fehlenden Werte in der Imputation berücksichtigt werden. Also sollte bei einem vorliegenden unvollständigen Datensatz zunächst geprüft werden, ob und welche Struktur hinter dem Fehlen von Werten steht.
+Zum besseren Verständnis wird die Indikatorvariable M definiert, welche das Feh- len bzw. Nichtfehlen eines Wertes ausdrückt. M nehme bei Vorliegen einer fehlenden Ausprägung den Wert 1 an, die Ausprägung M = 0 stehe für keinen fehlenden Wert. Um die Struktur der fehlenden Werte zu bestimmen, soll die Verteilung von M nun näher definiert werden. Dabei geht es zunächst nicht darum, diese Verteilung genau zu benennen, sondern darum festzustellen, dass M eine Verteilung hat und wovon sie abhängt.
+Desweiteren wird ein unvollständiger Datensatz Ycom definiert, welcher sich aus beobachteten Yobs und nicht beobachteten Werten Ymis zusammensetzt:
+Ycom = (Yobs, Ymis)
+Die Arbeiten von Rubin (1987) und Little und Rubin (1987) stellen erstmals die fol- gende Klassifikation des Antwortausfallphänomens vor, welche in der Statistik weit- gehend angenommen wurde:
+MCAR Man spricht bei den Antwortausfällen von Missing Completely At Random (MCAR), wenn die Wahrscheinlichkeit für das Fehlen der Werte im gesamten Datensatz (P(M|Ycom)) weder von den beobachteten (Yobs) noch von den nicht beobachteten (Ymis) Werten abhängt und somit unabhängig vom Datensatz ist:
+P(M|Ycom) = P(M)
+Dies ist beispielsweise der Fall, wenn Daten zufällig verloren gegangen sind.
+10
+
+Ein realistisches Beispiel hierfür wäre in einer medizinischen Untersuchung der Verlust von Blutproben, weil im Labor willkürlich Proben herunter gefallen sind.
+Ein solches Fehlen der Werte wird als ignorierbar betrachtet, da es von rein zufälliger Struktur ist.
+MAR Die Daten sind Missing At Random (MAR), wenn das Fehlen der Werte von den beobachteten, nicht aber von den nicht beobachteten Daten abhängt:
+P(M|Ycom) = P(M|Yobs)
+Dies bedeutet, dass die Wahrscheinlichkeit für das Fehlen eines Wertes in einer Variablen von einer anderen beobachteten Ausprägung einer Variablen abhängig ist. Dies ist beispielsweise der Fall, wenn festzustellen ist, dass die Antwortbe- reitschaft zur Variablen „Einkommen“ mit zunehmendem Alter abnimmt. Hier ist die Wahrscheinlichkeit für das Auftreten eines fehlenden Wertes in der Va- riablen „Einkommen“ abhängig von der beobachteten Variable „Alter“. Auch dieser Anwortausfall wird als ignorierbar bezeichnet, da er durch andere beob- achtbare Werte erklärt werden kann.
+An dieser Stelle sei auch erwähnt, dass es unter MAR einen Zusammenhang zwischen dem Fehlen der Werte (P(M|Ycom)) und der nicht beobachtbaren Wer- te (Ymis) geben kann, welcher jedoch durch ihren jeweiligen Zusammenhang zu den beobachtbaren Werten (Yobs) zu erklären ist. Nach Miteinbeziehung von Yobs verschwindet somit der Zusammenhang zwischen P(M|Ycom) und Ymis.
+Es lässt sich darüber streiten, ob der Ausdruck „Missing At Random“ hier tref- fend ist, da die Werte tatsächlich nicht zufällig fehlen. Die Terminologie nach Rubin hat sich jedoch durchgesetzt und ist weit verbreitet.
+MNAR Hängt das Fehlen der Werte von den nichtbeobachteten Werten ab, so be- schreibt man den Antwortausfall als Missing Not At Random (MNAR):
+P(M|Ycom) = P(M|Ymis)
+Das Fehlen der Werte hängt also von den fehlenden Werten selbst ab. Beispiel- haft ist hier der Fall, dass die Angabe über das Einkommen häufiger verweigert wird, je höher das Einkommen ist. Eine zusätzliche Abhängigkeit von den beob- achteten Werten (Yobs) ist hierbei nicht ausgeschlossen:
+P(M|Ycom) = P(M|Ymis,Yobs) 11
+
+In diesem Fall ist die Struktur der fehlenden Werte nicht ignorierbar, da die Ein- flüsse auf die Wahrscheinlichkeit des Fehlens von nichtbeobachtbaren Werten abhängen.
+In allen drei Fällen kann es selbstverständlich weitere externe Ursachen für den Antwortausfall geben. Ist beispielsweise ein Befragter aus gesundheitlichen Gründen weniger bereit, Fragen zu beantworten, oder hat eine Person einer Paper-und-Pencil- Befragung eine so unleserliche Schrift, dass die Antworten nicht interpretiert werden können, so stellen diese auch Gründe für die fehlenden Werte dar. Das bedeutet, dass auch im MCAR-Fall der Antwortausfall nicht zufällig sein muss, sondern nur von für den Untersuchungszusammenhang irrelevanten externen Variablen abhängt.
+Schon die Definitionen von MCAR, MAR und MNAR lassen vermuten, dass die Verteilung der Missingness für das weitere Vorgehen relevant ist. Denn sollte es ei- ne Fehlstruktur geben, so muss diese im Imputationsverfahren berücksichtigt werden. Um einen Datensatz auf MCAR zu testen, formulierten Kim und Curry (1977) einen χ2-Test, welcher überprüft, ob das Fehlen von Werten zweier Variablen unabhänig voneinander ist. Little (1988) dagegen prüft mit einem Hypothesentest die Unabhän- gigkeit zwischen dem Fehlen der Werte und den vorhandenen Ausprägungen anderer Werte. Beide dieser Tests prüfen nur darauf, ob der Datensatz MCAR ist. Bei einer Ablehnung der Nullhypothese können keine Aussagen darüber gemacht werden, ob MAR oder MNAR vorliegt.
+Je nach Einstufung des Antwortausfalls gibt es verschiedene Herangehensweisen im Umgang mit unvollständigen Datensätzen. Die wahrscheinlich einfachste Metho- de, um einen vollständigen Datensatz zu generieren, ist die sogenannte Complete Case Analysis. Hierbei werden alle statistischen Einheiten, welche in einer oder mehreren Variablen unvollständige Daten aufweisen, von der weiteren Analyse ausgeschlossen. Somit verbleibt ein zwar kleineres, doch komplettes Datenset. Die Vorteile der Com- plete Case Analysis liegen vor allem in ihrer leichten Anwendbarkeit. Das einfache Ausschließen von Fällen bedarf keinerlei Rechnung, sondern erstellt nur eine Teilmen- ge des Originaldatensatzes. Dieses Eliminierungsverfahren5 ist in gängige statistische Software (z. B. SPSS) implementiert, da für viele computergestützte Analysen voll- ständige Datensätze vorausgesetzt werden.
+Trotz der Einfachheit der Anwendung ist von dieser Methode in vielen Fällen ab- zuraten, da sie eine Menge Informationsverlust und weitere Nachteile in sich birgt. Insbesondere bei großen Mengen an Antwortausfall, ist die Frage nach der Brauchbar- keit des verbleibenden Teildatensatzes zu stellen. Ist der Datensatz noch repräsentativ,
+5Obwohl die Complete Case Analysis nur eines der Eliminierungsverfahren darstellt, soll sie hier das einzig diskutierte bleiben. Somit werden in dieser Arbeit beide Begriffe synonym verwendet.
+ 12
+
+wenn beispielsweise 70 % der Fälle ausgeschlossen werden mussten? Zudem ergibt sich ein weiteres Problem, wenn die fehlenden Werte nicht MCAR sind. Gibt es also Zusammenhänge zwischen dem Antwortausfall und den Ausprägungen der Merkma- le, so wird der Datensatz durch die Streichung dieser Fälle verzerrt und ist somit nicht mehr repräsentativ. Um dieser Verzerrung vorzubeugen, kann man bei einem Daten- satz, bei welchem die fehlenden Werte nicht MCAR sind, die nach dem Eliminierungs- verfahren verbleibenden Fälle gewichten, so dass sie der tatsächlichen Verteilung vor Streichung wieder mehr entsprechen. Das genaue Verfahren dieser Methode kann bei Little und Rubin (1987) nachgelesen werden. Ist das Fehlen der Werte MCAR, so hat der fallweise Ausschluss zwar keinen Einfluss auf die Verzerrung, doch wird durch das Ausschließen von Beobachtungen jegliche darauf basierende Schätzung weniger präzise, da sich die Varianz der Schätzfunktionen vergrößert.
+Um die Aussagekräftigkeit im Datensatz zu erhalten ist eine gängigere Herange- hensweise als die Streichung der unvollständigen Fälle die sogenannte Imputation, bei welcher die fehlenden Antworten durch plausible geschätzte Werte ersetzt werden. Die Imputation hat gegenüber der zuvor beschriebenen Complete Case Analysis den Vorteil, dass Einheiten mit fehlenden Werten nicht kategorisch aus der Analyse ausge- schlossen werden. Somit geht weniger Information verloren und es kann eine höhrere Präzision erreicht werden. Auch durch Anwendung von Imputation wird ein vollstän- diger Datensatz erzeugt, womit auch hier die Anwendbarkeit von Standardmethoden und Standardsoftware gegeben ist. All diese Vorteile greifen aber offensichtlich nur, wenn die Imputation zufriedenstellende Ergebnisse erzielt hat, d. h. wenn die impu- tierten Werte möglichst realistisch sind. Auch wenn dies schwer bis gar nicht zu prü- fen ist, so ist doch anzunehmen, dass die Implementierung dieses Verfahrens präzisere Ergebnisse erzielt als die Complete Case Analysis (Schafer & Graham, 2002).
+Bei der Imputation unterscheidet man zwischen der singulären und der multiplen Imputation. Diese beiden Methodengruppen unterscheiden sich grundlegend darin, dass bei der singulären Imputation für jeden fehlenden Wert ein Wert geschätzt und an entsprechender Stelle imputiert wird. Im Gegensatz hierzu wird bei der multiplen Im- putation für jeden Antwortausfall gleich eine Reihe plausibler Werte geschätzt, welche dann zu einem Imputationswert kombiniert werden. Im Folgenden soll näher auf die verschiedenen Techniken singulärer und multipler Imputation eingegangen werden.
+13
+
+3.1 Singuläre Imputation
+Wie bereits zuvor erwähnt, wird bei der singulären Imputation für jeden fehlenden Wert genau ein Wert geschätzt. Je nach Imputationsmethode werden hierzu unter- schiedliche Schätzverfahren verwendet. Eine Methode ist beispielsweise, fehlende Werte durch den Stichprobenmittelwert — berechnet durch die beobachteten Ausprä- gungen der Variablen — zu ersetzen. Es wird also hier angenommen, dass die ausge- fallenen Antworten in etwa den Wert annehmen, der im Mittel bei den vorliegenden Fällen beobachtet wurde. Auch wenn dies eine gängige Methode für einfache Analy- sen ist, so ist es doch offensichtlich, dass dies Methode Probleme bereitet, wenn eine nicht-symmetrische Verteilung vorliegt. Zudem wird durch das Einsetzen des gleichen Wertes in jedem fehlenden Fall die Varianz verkleinert. Dieser mangelnden Varianz beugt die Methode des personenspezifischen Mittelwertes vor. Hier werden die Ant- worten aus den anderen Variablen der gleichen statistischen Einheit zur Hilfe genom- men, um einen Mittelwert zu erzeugen, der den fehlenden Wert ersetzt. So wird zwar nicht für jede statistische Einheit innerhalb einer Variablen der gleiche Wert eingesetzt, doch umgekehrt verringert sich die Varianz innerhalb einer statistischen Einheit.
+Es ist leicht zu erkennen, dass die bisher beschriebenen Schätzverfahren mithilfe von Lageparametern eine einfache Methode darstellen, jedoch aufgrund ihrer man- gelnden Präzision nur unter bestimmten Voraussetzungen angewendet werden können und sollten. Ist beispielsweise die Stichprobe sehr groß und der Anteil fehlender Werte entsprechend klein, so können Lageparameter hilfreich sein, um die fehlenden Werte zu ersetzen. Trifft dies nicht zu, so sollte man sich anspruchsvollerer Schätzverfahren bedienen.
+Eine alternative Herangehensweise stellen die sogenannten Cold-Deck- und Hot- Deck-Verfahren dar. Bei diesen Methoden werden nicht Lageparameter, sondern tat- sächliche Antwortausprägungen aus den vorliegenden Daten für die fehlenden Werte eingesetzt. Bei der Cold-Deck-Methode werden hierzu Daten aus alten Erhebungen herangezogen, bei den Hot-Deck-Techniken wird der aktuelle Datensatz verwendet. Üblich ist hierbei die Unterteilung der Fälle in Gruppen gemäß der Ausprägungen eines vollständig erhobenen Merkmals. Innerhalb dieser Gruppen wird jeweils für die fehlenden Werte einer Variablen der gleiche Wert eingesetzt, welcher in anderen Fällen tatsächlich beobachtet wurde und für diese Gruppe wahrscheinlich ist.
+Um die Antwortausfälle möglichst präzise zu schätzen, sollte so viel zur Verfügung stehende Information wie möglich benutzt werden. Dies ist der Ansatz der Regressi- onsverfahren. Bei diesen Verfahren wird versucht, einen Zusammenhang zwischen der Variablen, in der der entsprechende Nonresponse auftaucht, und den übrigen beob- achteten Variablen festzustellen. Angenommen der Datensatz bestünde nur aus drei
+14
+
+Variablen: X1, X2 und Y . X1 und X2 wurden vollständig bei n Personen beobachtet, bei Y liegt genau ein Antwortausfall vor. Um nun diesen fehlenden Wert zu ersetzen, wird mithilfe der n − 1 vollständigen Beobachtungsreihen eine Regressionsfunktion der folgenden Gestalt aufgestellt:
+yˆ=βˆ +βˆx +βˆx 01122
+Dabei sind βˆ , βˆ und βˆ die geschätzten Regressionsparameter. Mit dieser Gleichung, 012
+welche den Zusammenhang zwischen Y und den übrigen Variablen beschreibt, kann der fehlende Wert in Y leicht und plausibel mithilfe der Ausprägungen in X1 und X2 geschätzt werden.
+Das Regressionsverfahren nutzt also die Korrelation der Variablen untereinander aus und errechnet so für jeden fehlenden Wert eigens eine Schätzung. Dabei wird je- doch kein Fehler mit einberechnet, was bedeutet, dass die geschätzten Werte von der Regressionsgleichung perfekt beschrieben werden und somit der Standardfehler unter- schätzt wird. Außerdem kann es durch die rein mathematische Berechnung der einzu- setzenden Werte dazu kommen, dass die Schätzer außerhalb des Wertebereiches der Variablen liegen. Dieses Problem löst das Verfahren des Predictive Mean Matchings. Die Vorgehensweise entspricht der des Regressionsverfahrens, außer dass der Regres- sionswert nicht direkt imputiert wird. Stattdessen wird ein Wert aus dem Wertebereich der Variablen gesucht, der dem Regressionswert am ehesten entspricht, und dieser dann eingesetzt.
+Ein Nachteil der betrachteten singulären Imputationsmethoden liegt darin, dass kei- nes der Verfahren berücksichtigt, dass es eine Struktur hinter den Antwortausfällen geben kann. Im zuvor erwähnten Beispiel einer Einkommensumfrage kann es vor- kommen, dass Personen mit einem höheren Gehalt die Antwort zu ihrem Einkommen häufiger verweigern. Das bedeutet, dass die fehlenden Werte in dieser Variablen tat- sächlich durchschnittlich höher sind als die beobachteten Werte. Wendet man in die- sem Fall eines der gerade vorgestellten singulären Imputationsverfahren an, so werden die geschätzten Werte kleiner ausfallen als die realen Werte. Denn alle Schätzverfahren (sowohl Lageparameter, Cold- oder Hot-Deck-Techniken als auch Regressionsverfah- ren) beziehen sich auf die beobachteten Ausprägungen und setzen somit voraus, dass die Daten mindestens MAR sind.
+Hinzu kommt das Problem, dass durch das Schätzen eines einzigen Wertes pro Zelle, der Unsicherheitsfaktor verloren geht. Die geschätzten Werte werden im neu generierten Datenset behandelt als seien sie tatsächlich beobachtet worden. Die durch die Schätzung entstandene Unsicherheit wird nicht berücksichtigt. Das hat zur Folge, dass der Standardfehler der Parameter im neu generierten Datensatz meist unterschätzt
+15
+
+wird (Schafer & Graham, 2002).
+Um diese Unsicherheit des Schätzens zu berücksichtigen, kann auf multiple Impu-
+tationsverfahren zurückgegriffen werden.
+3.2 Multiple Imputation
+Der grundlegendste Unterschied zwischen der singulären und der multiplen Imputa- tion ist die Anzahl der Werte, die für einen Antwortausfall geschätzt werden. Da bei den singulären Verfahren nur jeweils ein Schätzwert berechnet und in den Datensatz eingesetzt wird, wird der Unsicherheit nicht genügend Rechnung getragen. Um die- sem Problem entgegenzuwirken, wird bei der multiplen Imputation dieser Vorgang des Schätzens und Einsetzens mehrfach wiederholt. So entstehen nicht einer, sondern gleich mehrere komplette Datensätze, mit welchen die betrachtete Analyse und Para- meterberechnung durchgeführt wird.
+Die Vorgehensweise der multiplen Imputation erfolgt in drei Schritten: Imputation, Analyse und Integration (Zahn, 2009).
+Im ersten Schritt werden für jeden fehlenden Wert m > 1 Werte geschätzt und eingesetzt. Hierbei können wie bei der singulären Imputation unterschiedliche Schätz- verfahren zur Hilfe genommen werden. Nach dem Imputationsschritt liegen somit m vollständige Datensätze vor. Mit diesen Datensätzen kann nun wie gewohnt die Analy- se vollständiger Datensätze mit den üblichen Methoden und Standardsoftware durch- geführt werden. Dies muss allerdings m-mal getrennt voneinander geschehen, so dass schließlich m unterschiedliche Analyseergebnissets vorliegen, welche erst im nächsten Schritt wieder vereint werden. Die m Datensätze spiegeln die Unsicherheit wider, wel- che durch das Schätzen entstanden ist. Somit werden im letzten Schritt der Integration durch Kombinieren der Ergebnisse (Rubin, 1987) allgemeine Schätzer und Standard- fehler erzeugt, welche die Unsicherheit der Daten reflektieren. (Schafer & Graham, 2002)
+Zum Schätzen der zu imputierenden Werte wird im Rahmen der multiplen Impu- tation häufig auf den sogenannten Expectation-Maximization-Algorithmus (EM-Algo- rithmus) zurückgegriffen. Dieser stellt eine Verwendung von Maximum-Likelihood- Methoden bei unvollständiger Information vor. Der EM-Algorithmus basiert darauf, dass der Gesamtdatensatz einer bestimmten Verteilung folgt, deren Parameter es zu schätzen gilt. Da die Daten nicht vollständig vorliegen, können die Parameter nicht perfekt berechnet werden. Das Prinzip des EM-Algorithmus besteht darin, die Parame- ter aus den beobachteten Daten zu schätzen, um anhand dieser Parameter die fehlenden Werte zu ergänzen. Aus diesem neuen vervollständigten Datensatz werden die Parame-
+16
+
+ter neu geschätzt und aus den neuen Parametern wiederum neue Schätzungen für die fehlenden Werte errechnet. Bei iterativer Wiederholung dieser Schritte konvergieren die geschätzten Parameter gegen ihre wahren Werte.
+Im Detail werden die folgenden beiden Schritte iterativ wiederholt:
+E-Schritt Ziel der Berechnung ist es, den Parameter θ so zu schätzen, dass er für den kompletten Datensatz ycom (also beobachtete und fehlende Daten) am wahr- scheinlichsten ist. Dazu wird zunächst eine Likelihoodfunktion L(θ,ycom) auf- gestellt, die ebendieses misst.
+Der Parameter θ soll unter der Voraussetzung am wahrscheinlichsten sein, dass yobs beobachtet wurde und der in der vorangegangenen Iteration geschätzte Pa- rameter θi als bis dahin bester Näherungswert an das echte θ angenommen wird. Deshalb wird der Erwartungswert der Likelihoodfunktion unter den Bedingun- gen yobs und θi berechnet. Dieser bedingte Erwartungswert soll gemäß einschlä- giger Fachliteratur (Little & Rubin, 1987) mit Q bezeichnet werden:
+Q(θ) = Q(θ|θi) = E(L(θ, ycom)|yobs, θi) M-Schritt Im Maximization-Schritt wird Q(θ) nach θ maximiert.
+θi =argmaxQ(θ|θi−1) θ
+Das θi für welches Q(θi) am größten ist wird für die nächste Iteration verwendet.
+Im ersten Durchlauf muss ein Startwert θ0 „manuell“ geschätzt werden. Je nachdem welche Parameter für welche Art von Verteilung geschätzt werden sollen, ist hier ein plausibler Wert frei zu wählen. Der EM-Algorithmus konvergiert in jedem Fall - unab- hängig davon, welcher Startwert gewählt wird. Allerdings kann es vorkommen, dass die Konvergenz in lokalen Maxima hängen bleibt. Es empfiehlt sich daher, unterschied- liche Startwerte auszuprobieren. Ein weiterer Nachteil besteht darin, dass die Berech- nung keine Standardfehler berücksichtigt, d.h. es wird davon ausgegangen, dass die zu imputierenden Werte der unterliegenden Verteilung perfekt folgen, was nicht realis- tisch ist. Trotz dieser Nachteile führt der EM-Algorithmus meist zu sehr guten Ergeb- nissen. Deshalb ist diese Methode zur Schätzung von Verteilungsparametern bei un- vollständiger Information weit verbreitet und auch in gängiger Software (z.B. NORM, SPSS, R) implementiert.
+Im nächsten Schritt der Datenanreicherung (Data Augmentation) werden zunächst die fehlenden Werte anhand des im EM-Algorithmus erhaltenen Parmeters θEM ge- schätzt. Da dieser Parameter jedoch auf den beobachteten Werte basiert, stellt er nur
+17
+
+einen der möglichen Parameter der gesamten betrachteten Population dar. Um dieser
+Unsicherheit Rechnung zu tragen, wird dem Parameter eine plausible Verteilung un-
+terstellt. Diese geschätzte Verteilung repräsentiert, wie die Verteilung des Parameters
+tatsächlich aussieht unter Einbeziehung des anhand der beobachteten Werte geschätz-
+ten Parameters θ . Mithilfe dieser Verteilung wird ein neuer Parameter θˆ geschätzt, EM 1
+welcher sich in einem aus der unterstellten Verteilung aufgespannten Konfidenzinter- vall um θ befindet. Dieses neue θˆ wird genutzt, um die fehlenden Werte im Daten-
+geschätzt werden:
+m θˆ θ ̃= i=1 i
+m
+EM 1
+satz zu bestimmen. Aus dem neuen vollständigen Datensatz wird wiederum ein neuer
+Parameter θˆ geschätzt und der Prozess beginnt von vorn. Nach k Iterationen konver- 2
+giert der Prozess und es liegt ein neuer vollständiger Datensatz vor.
+Da bei der multiplen Imputation jedoch nicht ein sondern m ergänzte Datensätze vorliegen sollen, deren Ergebnisse anschließend zu kombinieren sind, wird der gesam-
+te Prozess m-mal wiederholt.
+Die Anzahl der Iterationen m kann dabei vom Anwender selbst bestimmt werden.
+Auch wenn theoretisch nur eine unendliche Anzahl an Iterationen die wahren Werte am genauesten schätzt, so zeigt sich doch, dass relativ wenige Iterationen nötig sind, um gute Ergebnisse zu erzielen. Rubin (1987) stellte hierzu eine Formel auf, welche bei einer Informationsausfallrate von λ die Effizienz eines Schätzers mit m Iterationen im Vergleich zu m = ∞ berechnet:
+(1 + λ/m)− 12
+Liegt beispielsweise eine Informationsausfallrate von 40 % vor, so ist der Schätzer nach 10 Iterationen schon zu (1 + 0, 4/10)−1/2 = 96 % effizient (Rubin, 1987).
+Im Anschluss an die Imputation liegen also m Datensätze mit m Parametersets
+vor. Wie diese Ergebnisse zu Aussagen über den Gesamtdatensatz kombiniert wer-
+den können, wird von Rubin (1987) näher erläutert. Um seinen Ansatz zu erklären,
+sei angenommen, θ sei ein Modellparameter des Gesamtdatensatzes, welchen es in
+m Iterationen zu schätzen galt. θˆ sei die i-te Schätzung des Parameters θ. Nach Ru- i
+bin kann der Parameter des Gesamtdatensatzes θ ̃ durch einfache Mittelwertberechnung
+ Bei der Kombination der Analyseergebnisse ist allerdings immer eine große Varianz
+zu erwarten, da sie sowohl die bei der Kombination entstandene Varianz als auch die
+Standardfehler, verursacht durch die nicht perfekte Schätzung von θ ̃ (θ ̃ = θˆ + e ), ii
+enthält.
+18

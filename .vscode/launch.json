@@ -19,11 +19,11 @@
             "program": "${workspaceFolder}/word_frequencies.py",
             "console": "integratedTerminal",
             "args" : [
-                "--file", "./Bachelorthesis.txt", 
+                "--file", "./bachelor_text_example2.txt", 
                 "--exclude", "./ignore_words.txt",
                 //"--limit", "9999"
                 //"--lyx",
-                //"-vv",
+                "-v",
             ],
             "justMyCode": true,
             "autoReload": {

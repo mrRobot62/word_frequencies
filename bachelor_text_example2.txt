@@ -1,0 +1,259 @@
+Bachelorarbeit
+Entwicklung und Untersuchung eines Konzepts zur Nutzung von Indoor-Positioning-Technologie in Systemen für adaptive, mobile Informationsbereitstellung
+Datum der Abgabe: Betreuer: Zweitgutachter:
+
+Abstract
+Die dynamische Entwicklung mobiler Systeme macht es erforderlich, adaptive Informationen auf der Grundlage der Position von Objekten bereitzustellen. Im Anwendungsgebiet der Indoor Positioning, bei dem die Signale des globalen Navigationssatellitensystems nicht erreichbar sind, existiert bisher keine Standardlösung für die optimale Umsetzung. Im Rahmen dieser Arbeit wird die Umsetzung anhand von realen und abstrakten Systemen für die adaptive und mobile Bereitstellung von Informationen analysiert und in Bezug auf den medizinischen Bereich vertieft. Dementsprechend wird die Integration mehrerer Positionierungsverfahren in ein System zur Nutzung von Smart Glasses implementiert. Der Entwurf- und Implementierungsprozess basiert auf einer Analyse aktueller Lösungen und Methoden. Abschließend ist das Konzept mit Hilfe einer Anforderungsanalyse, einer Evaluationsstrategie und einer Simulationsumgebung untersucht worden.
+The dynamic evolution of mobile systems makes it necessary to provide adaptive information according to the position of objects. In the application area of indoor positioning, where the signals of the global navigation satellite system are not accessible, no standard solution for the optimal implementation exists so far. In this thesis, the problem is analyzed based on real and abstract systems for adaptive, mobile information provision and deepened in relation to the medical field. Accordingly, the integration of several positioning methods into a system for the use of smart glasses is implemented. The design and implementation process is based on an analysis of current solutions and methods. Finally, the concept has been investigated with the help of a requirements analysis, an evaluation strategy and a simulation environment.
+
+Danksagung
+An dieser Stelle möchte ich mich bei all denjenigen bedanken, die mich in der Erarbeitung dieser Bachelorarbeit unterstützt haben.
+Zuerst gebührt mein Dank xxxxxx, der mir die Möglichkeit gab, an diesem spannenden Projekt mitzuarbeiten und der mir hilfreiche Anregungen bei der Betreuung dieser Arbeit gegeben hat.
+Ich bedanke mich bei der Firma Linxens Germany GmbH für die Bereitstellung von Hardware- Komponenten zum Aufbau der Simulationsumgebung.
+
+ Aufgabenstellung
+
+ 
+ 
+Inhaltsverzeichnis
+1. Einleitung .............................................................................................................. 1
+1.1. Motivation.................................................................................................................. 1 1.2. Zielsetzung................................................................................................................ 2 1.3. Verwandte Studien.................................................................................................... 2 1.4. Inhaltlicher Aufbau der Arbeit.................................................................................. 3
+2. Adaptive, mobile Informationsbereitstellung..................................................... 5
+2.1. Begriffsklärung ......................................................................................................... 5
+2.2. Stand der Technik..................................................................................................... 6
+2.2.1. Smartphones .......................................................................................................................... 6 2.2.2. Smart Glasses ........................................................................................................................ 7 2.2.3. Andere Geräte........................................................................................................................ 8
+3. Indoor Positioning.............................................................................................. 10
+3.1. Begriffsklärung ........................................................................................................10 3.1.1. Indoor Positioning ............................................................................................................... 10 3.1.2. Definitionen der wichtigsten Parameter .............................................................................. 10 3.1.3. Globales Navigationssatellitensystem ................................................................................. 10 3.1.4. Received signal strength indication (RSSI)......................................................................... 11 3.1.5. Line-of-Sight ....................................................................................................................... 11 3.1.6. Ankerpunkt, Beacon............................................................................................................ 11 3.1.7. Point of Interest ................................................................................................................... 11
+3.2. Methoden..................................................................................................................11
+3.2.1. Cell of Origin....................................................................................................................... 12 3.2.2. Lateration............................................................................................................................. 12 3.2.3. Andere Methoden ................................................................................................................ 14
+3.3. Technologien ...........................................................................................................15
+3.3.1. Wireless Local Area Network ............................................................................................. 15 3.3.2. Bluetooth ............................................................................................................................. 16 3.3.3. Kameras............................................................................................................................... 16 3.3.4. Radio Frequency Identification ........................................................................................... 16
+4. Analyse................................................................................................................ 18
+4.1. Methodik...................................................................................................................18 4.2. Anforderungen.........................................................................................................19
+
+4.2.1. Funktionale Anforderungen ................................................................................................ 19 4.2.2. Qualitative Anforderungen.................................................................................................. 20
+4.3. Konzeptaufbau.........................................................................................................20
+4.3.1. Problem der Speicherstelle des Kartenmodells ................................................................... 21 4.3.2. Bestimmung der Schnittstellen............................................................................................ 22 4.3.3. Aufbau eines medizinischen AMIP-Systems ...................................................................... 23
+5. Design und Realisierung.................................................................................... 25
+5.1. Grundlegende Designentscheidungen...................................................................25
+5.2. Kartenmodell............................................................................................................25
+5.3. Sensorik ...................................................................................................................26
+5.3.1. QR Codes ............................................................................................................................ 29 5.3.2. NFC Tags ............................................................................................................................ 30 5.3.3. BLE Beacons....................................................................................................................... 31
+5.4. Berechnungsinstanz................................................................................................32
+6. Evaluation ........................................................................................................... 33
+6.1. Simulationsumgebung ............................................................................................33
+6.2. Testszenarien...........................................................................................................33
+6.2.1. Installation ........................................................................................................................... 33 6.2.2. Umschalten zwischen den Technologien ............................................................................ 34 6.2.3. Bewegung und Scannen innerhalb der Umgebung.............................................................. 34 6.2.4. Umgestaltung von Ankerpunkten........................................................................................ 34 6.2.5. Umgestaltung von Betten .................................................................................................... 35 6.2.6. Patientenanmeldung ............................................................................................................ 35 6.2.7. Ausfall der Kommunikation ................................................................................................ 35 6.2.8. Mehrere Nutzer gleichzeitig ................................................................................................ 35 6.2.9. Zusammenfassung der Testszenarien .................................................................................. 35
+7. Diskussion und Fazit.......................................................................................... 36
+7.1. Diskussion der Resultate ........................................................................................36
+7.2. Übertragung auf andere mögliche Anwendungsfälle............................................38 7.2.1. Mobile, adaptive Überwachung einer Produktion ............................................................... 38 7.2.2. Intelligentes Parksystem...................................................................................................... 39
+7.3. Fazit ..........................................................................................................................39
+Literaturverzeichnis ............................................................................................... 41 Abbildungsverzeichnis .......................................................................................... 46 Tabellenverzeichnis ............................................................................................... 47
+
+1. Einleitung
+Mit der starken Verbreitung der Mobilität ist die Positionierung ein Schlüsselfaktor der Anpassungs- fähigkeit von vielen Systemen wie autonome Fahrzeuge, Mobiltelefone oder intelligente Gegenstände geworden. Die wachsende Verfügbarkeit des Internets, weite Verbreitung von mobilen Geräten und zunehmende Automatisierung im Alltag erzeugen einen wachsenden Bedarf für die adaptive Informationsbereitstellung. Innerhalb von Gebäuden ist das Spektrum der Anwendungen, der realisierbaren Indoor Positioning Technologien und der Endgeräte besonders komplex.
+Near-To-Eye-Display-Geräte sind heutzutage im vielen Arbeitsgebieten eingesetzt, um die Effizienz der Arbeit zu steigern. Dazu gehören auch Smart Glasses. Im Gesundheitswesen, bei dem ein großes Interesse am schnellen Empfang von Gesundheitsinformationen besteht, verbessert die Nutzung dieser Geräte die Verpflegung von Patienten und senkt Kosten der Behandlung. Dies ermöglichen zahlreiche Funktionen, wie zum Beispiel Telekomunikation, Aufnahme von Videos mit angebundener Kamera, Objekterkennung oder schneller Empfang von Notfallmeldungen [1]. Um den Effizienzfaktor zu erhöhen, kann ein Ortungssystem zur schnellen Identifizierung von Patienten eingebunden werden. Eine Problematik, die dabei auftritt, ist die Suche nach dem optimalen Positionierungsverfahren. Während die übliche Lokalisierung mit einem globalen Navigationssatellitensystem (GNSS) für den Nutzer kostengünstig und für vielen Anwendungen hervorragend ist, scheitert sie innerhalb von Gebäuden.
+Eine adaptive Software, welche die Position von Objekten zur Entscheidungsunterstützung nutzt, kann je nach Anwendungsfall eine andere Technologie optimaler betrachten. Im Fall der adaptiven, mobilen Systemen zur Nutzung in Innenräumen handelt es sich um die sogenannte Indoor Positioning Technologie. Die Auswahl von Ortungsmethoden und Speicherstellen für Datenbanken, die Interpretation von Signalen, der Berechnungsprozess, die Kopplungsarten und eine Menge anderer Parameter machen die individuelle Anpassung komplex. Im Rahmen dieser Arbeit wird ein Konzept vorgezeigt, welches als Basis für die komplexe Anpassung von Indoor Positioning dient.
+1.1. Motivation
+Sowohl im beruflichen als auch im täglichen Alltag gewinnt die adaptive und mobile Informationsbereitstellung (AMIP1) immer mehr an Bedeutung. Die globale Anzahl von mobilen Geräten wächst kontinuierlich und nach Angaben von CISCO (2020) wird sie im Jahr 2022 auf 12,3 Milliarden Stück ansteigen [2], [3]. Verschiedene kontextsensitive und adaptive Plattformen sind bereits verfügbar und verbreitet. Es wächst die Verbreitung von sogenannten intelligenten Lösungen, wie Smart Home, Virtual Reality Systemen, Smartphones, Smart TVs oder Smart Glasses. Die Anzahl der Smartphone-Nutzer hat sich in Jahren 2012-2020 laut Statista verdoppelt [4]. Einigen Studien zufolge werden Smart Glasses das nächste führende mobile Gerät nach Smartphones sein [5], [6]. Sowohl diese Brillen als auch alle hier erwähnte Geräte verfügen über eine kontextadaptive Funktionsweise.
+1 AMIP - Aus dem Englischen „Adaptive, mobile Information Provision”
+ 1
+
+Dementsprechend ist die Bereitstellung von adaptiven mobilen Informationen eine wichtige Herausforderung in der digitalen Technik geworden. Verschiedene Anwendungen sind in der modernen Industrie und im Dienstleistungssektor denkbar. Dazu gehören beispielsweise die Bereitstellung von Informationen über die unmittelbare Umgebung, relevante Orte oder Ereignisse, Detektion und Navigation von Zielen, Warnung vor Gefahren, Aufbereitung von aktuell benötigten Informationen je nach Ort und Kontext oder Verfolgung von Bewegungen und Vorgängen. Vorbildlich ist die Nutzung heute schon in den Bereichen Logistik, Personenverkehr, Medizin, Unterhaltung oder Bildung, wo die Anpassungsfähigkeit berufsspezifische kontextabhängige Entscheidungen unterstützt. Damit steigt die Effizienz oder Qualität der aktuellen Tätigkeiten und zudem erschließen sich neue Interaktionspotentiale bzw. es erhöhen sich die Sicherheit und Nachvollziehbarkeit.
+Ein Schlüsselaspekt der Kontextadaption ist das sogenannte Indoor Positioning, die es ermöglicht, den Nutzer innerhalb von Gebäuden zu verorten. Die übliche Lokalisierungstechnologie, also das GPS, ist technologisch nur in Räumen mit ausreichender Signalverfügbarkeit von globalen Navigationssatelliten nutzbar. Diese Eigenschaft stellt im Bezug zu der Fähigkeit der Positionierung in allen Umgebungen ein Flaschenhals-Effekt dar. Dieses Effekt kann durch den Einsatz von diversen Indoor Positioning Technologien, die unterschiedliche Vor- und Nachteile erweisen, vervollständigt werden. Somit ergibt sich eine große Marktchance.
+1.2. Zielsetzung
+Das Ziel dieser Arbeit ist es, ein Softwarekonzept zur Integration und Nutzung von Indoor Positioning Technologie für verschiedene Systeme zur adaptiven und mobilen Informationsbereitstellung zu entwickeln und zu untersuchen. Dabei soll das Konzept durch eine Abstraktion von Methoden der Ortbestimmung, Ausgabeinformationen der Sensoren und deren Integration realisiert werden. Wegen des Aufwands, der mit der Anpassung von Indoor Positioning Technologie verbunden ist, wird angestrebt, diese so weit wie möglich vom Anwendungsfall zu entkoppeln, um die Wartbarkeit, Erweiterbarkeit und Übertragbarkeit der Software zu erhöhen. Für die Studie wird eine Anwendung aus dem Bereich Digital Health untersucht, bei der die Ärzte in einem Krankenhaus persönliche Smart Glasses tragen und positionsabhängige Daten von Patienten angezeigt bekommen. Ein prototypisches System für den Einsatz von Smart Glasses „tooz DevKit“ [7] steht für die Implementierung und Untersuchung bereit. Die Sensortechnologie soll mittels persönlicher Smartphones mit dem Android- Betriebssystem realisiert werden. Für dieses System sollen eine Integration von mehreren Indoor Positioning Technologien, eine Evaluation, Bewertung und schließlich eine Untersuchung der Ableitung auf eine Abstraktionsebene durchgeführt werden. Es soll überprüft werden, welche Technologie die höchste Effektivität des Einsatzes gewährleistet und welche Probleme bzw. technische oder physikalische Begrenzungen bei der Entwicklung des Konzepts auftreten. Zudem wird betrachtet wie hoch die Kosten sind und inwieweit das Konzept anwendbar und erweiterbar ist.
+1.3. Verwandte Studien
+Es wurden mehrere Forschungen und Frameworks zur Analyse, Design, Evaluation und Integration ausgewählter Indoor Positioning Technologien erstellt [8]–[12]. Manche wissenschaftliche Arbeiten,
+2
+
+wie bei Song et al. (2018) oder Restrepo (2013), beinhalten eine Realisierung für Smartphones mit dem Betriebssystem Android [13], [14]. Das Thema der Einbindung von Indoor Positioning an verschiedene AMIP-Systeme wurde auch mehrfach in wissenschaftlichen Arbeiten behandelt [12], [15], [16]. Die Arbeiten sind jedoch entweder in Bezug auf eine Technologie, eine konkrete Umgebung oder einen Anwendungsfall beschränkt, stellen die Entwicklungskonzepte nur oberflächlich dar oder entsprechen wegen ihres Alters nicht mehr dem heutigen Stand der Technik.
+Brena et al. (2017) haben eine breite technologische Übersicht und die Evaluation von Ansätzen zur Indoor Positioning aufgezeigt [12]. Darin wird der bisherige Stand der Technik analysiert und die Lösungen in einem strukturierten Vergleich der Technologien im Hinblick auf verschiedene Anforderungsebenen vorgestellt.
+Potorti et al. (2017) schlagen einen Benchmarking-Evaluationskonzept vor, das auf einem strengen Vergleich von Indoor Positioning Technologien basiert [11]. Das Vorgehen kommt vom „Indoor Positioning and Indoor Navigation (IPIN) Competition“-Wettbewerb von 2016.
+Mautz (2012) stellt ein Kompendium von Techniken für Indoor Positioning in 13 Kategorien mit detaillierten Beschreibungen in einer sequentiellen Reihenfolge vor [16]. Zusätzlich dazu werden Anwendungen vorgezeigt, von denen einige mit mobilen und adaptiven Systemen zusammenhängen.
+Mitrasinovic et al. (2015) haben die wichtigste V erwendungszwecke von Smart Glasses im Gesundheitswesen betrachtet [1]. Dabei wurden Begrenzungen, Eigenschaften, mögliche Funktionen und thematische Anwendungen ermittelt. Ein System für mobile, adaptive Bereitstellung von Informationen im Gesundheitswesen unter Beteiligung von Smartphones, jedoch ohne Funktionen der Indoor Positioning, wurde von Setiawan et al. (2019) entwickelt [17]. Eine Diskussion zum Thema der Positionierung in adaptiven, mobilen Systemen wurde von Krüger et al. (2007) zusammengefasst [15].
+Basierend auf der Literatur ist es schwierig, klare Standardlösungen zu finden. Die größte Herausforderung bei der Indoor Positioning ist die gleichzeitige Erbringung aller Parameter auf hohem Niveau. Die Vielfalt der Bewertungskriterien, die in der Literatur zum Vergleich von Technologien angewandt werden, weist auf einen dynamisch evaluierten Stand der Technik in diesem Bereich und eine Breite der Vorgehensmöglichkeiten der Realisierung auf. Für die Positionierung von Smartphones waren in den letzten Jahren häufig Bluetooth und WLAN die bevorzugten Technologien.
+1.4. Inhaltlicher Aufbau der Arbeit
+Die Arbeit gliedert sich in sieben Bestandteile, wobei der erste Teil die Einleitung ist. Der zweite und der dritte Abschnitt der Arbeit bilden den theoretischen Teil. Darin werden die Begriffsklärungen, Grundlagen der Forschung und der Stand der Technik beschrieben. Das zweite Kapitel befasst sich mit dem Thema der adaptiven, mobilen Informationsbereitstellung. Das dritte Kapitel befasst sich mit dem Thema der Indoor Positioning.
+Im vierten Abschnitt wird eine Analyse hinsichtlich der Konzeptentwicklung vorgestellt. Basierend auf den Ergebnissen aus dem vierten Teil, wird im fünften Kapitel ein Prototyp einer Software zur adaptiven
+3
+
+Nutzung von Smart Glasses entworfen und implementiert. Im sechsten Abschnitt der Arbeit wird eine Evaluationsstrategie für die Software erstellt und angewendet. Schließlich werden im siebten Kapitel die Ergebnisse bewertet und zusammengefasst.
+4
+
+2. Adaptive, mobile Informationsbereitstellung
+Der folgende Abschnitt beschreibt die Grundlagen von AMIP und gibt einen Überblick über den aktuellen Stand der Technik.
+2.1. Begriffsklärung
+Unter Bereitstellung von Informationen versteht man das Erzeugen/Erfassen und die entsprechende Ausgabe von Daten. Die Mobilität einer Informationsbereitstellung bezieht sich auf die Eigenschaft der physischen Beweglichkeit von der Komponente, die sie realisiert. Die Adaptivität, auch als Anpassungsfähigkeit bekannt, ist die Fähigkeit, das eigene Verhalten auf der Grundlage von Informationen des Benutzers und der Umgebung anzupassen. Die AMIP, also die adaptive mobile Informationsbereitstellung, ist somit ein Prozess, der durch die Mobilität und Adaptivität bestimmter Objekte Informationen zur Unterstützung von Entscheidungen bereitstellt [18]–[20].
+Eine Art von Geräten, die eine adaptive mobile Ausgabe von Informationen auf einem digitalen Endgerät ermöglichen, sind Near-To-Eye-Displays, auch bekannt als Head-mounted Displays2. Dieser Begriff beschreibt ein tragbares Gerät, das ein virtuelles Bild im Sichtfeld eines oder beider Augen erzeugt. Dazu gehören neben den Smart Glasses beispielsweise auch Videobrillen oder Virtual Reality- Headsets, die im Gegensatz zu den Smart Glasses das gesamte Sichtfeld des Nutzers abdecken [21].
+Als Smart Glasses, Datenbrille oder Augmented-Reality-Brille, sind Near-To-Eye-Display-Geräte definiert, die dem Blickfeld des Nutzers Informationen hinzufügen und eine erweiterte Realität schaffen [22]. Neben den typischen Leistungsmerkmalen und der optischen Anzeige unterscheiden sich die einzelnen Modelle in Gewicht, Größe, Form, Interaktionsmöglichkeiten, Sensortechnologie und anderen integrierten Komponenten. Auf dem Markt gibt es Geräte die mit Tasten, Touchpad, Kamera, Tonsender, Mikrofon, GPS, Beschleunigungsmesser, Gyroskop, Magnetometer, Kompass, Lichtsensor, Augen-Tracker, WLAN und Bluetooth ausgestattet sind [1], [6].
+Smartphone ist die Bezeichnung für moderne Mobiltelefone, die über die umfangreichen Funktionen eines Rechners und eines Kommunikationsnetzes verfügen.
+Computation Offloading ist ein Verfahren der Übertragung von Rechenoperationen mit hohem Ressourcenaufwand auf einen externen Rechner. Dies kann zur Beschleunigung von Aufgaben wie Bildwiedergabe und mathematischen Berechnungen verwendet werden [23].
+2 Head-mounted Display: wörtlich „am Kopf befestigte Anzeige“
+ 5
+
+2.2. Stand der Technik
+Geeignete kontextsensitive Plattformen zur adaptiven mobilen Informationsbereitstellung sind bereits im beruflichen und täglichen Alltag verfügbar und verbreitet. Der Stand zu den wichtigsten davon wurde in diesem Kapitel beschrieben.
+2.2.1. Smartphones
+Laut Cisco Annual Internet Report (2020) wird die weltweite Zahl der nutzbaren Smartphones zwischen 2018 und 2023 von 4,9 Milliarden auf 6,7 Milliarden steigen [3]. Dementsprechend wird ein globales Wachstum von 66% auf 71% der Mobilfunkteilnehmer als Prozentsatz der Weltbevölkerung im Jahr 2023 prognostiziert. Die führenden Betriebssysteme für Smartphones zum Stand von 2021 sind: Android mit einem Anteil von etwa 84% am weltweiten Smartphone-Markt und iOS mit 16%. Hingegen sind die Hersteller mit dem größten Marktanteil Samsung (mit dem Modell Galaxy A215 als seinen meistverkauftem im Januar 2021), Xiaomi (mit dem populärsten Redmi 9A) und Apple (iPhone 12). Zusammen besitzen diese drei Hersteller ca. 50% des Marktanteils [24]–[26].
+Zur Ausstattung eines Smartphones gehören in der Regel:
+o Ein Touchscreen (berührungssensitiver Bildschirm), Batterie, Kabelanschlüsse
+o Telefon Ein/Aus-Schalter, Lauter- und Leiser-Taste
+o Kommunikationstechnologien: WLAN, Bluetooth, GPS, NFC, Radio, Telefonnetz3. o Vordere und hintere Kameras
+o Lautsprecher, Mikrofon
+o Beschleunigungsmesser,Gyroskop,Magnetometer
+Die reichhaltige Sensorik ermöglicht viele kontextadaptive Funktionalitäten, wie zum Beispiel erweiterte Realität (siehe Abbildung 2.1) zu nutzen. Zudem eignen sich die Smartphones, aufgrund ihrer geeigneten physikalischen Parameter und ihrer hohen Verfügbarkeit, für die Realisierung von Indoor Positioning.
+Android ist das populärste Betriebssystem für mobile Geräte und wurde speziell für mobile Geräte mit Touchscreen auf der Grundlage einer modifizierten Version des Linux-Kernels entwickelt. Heutzutage werden die Applikationen hauptsächlich in der Programmiersprache Kotlin oder Java implementiert. Die geeignete IDE4 dafür ist Android Studio [27].
+Das alternative Betriebssystem, iOS, wurde von Apple Inc. entwickelt und läuft auf dem Smartphone iPhone. Die App-Entwicklung erfolgt vor allem in der Sprache Swift mit der IDE Xcode. Im Vergleich zu Android gilt iOS als sicherere Plattform, jedoch mit mehreren Einschränkungen bei der Funktionalität, beispielsweise im Bereich der Nutzung von Near Field Communication (NFC) im Hintergrund [28].
+3 Im Jahr 2020 wurden die ersten Smartphones mit 5G-Geschwindigkeitsnetz angekündigt
+4 IDE - Integrierte Entwicklungsumgebung, aus dem Englischen „Integrated Development Environment”
+ 6
+
+ Abbildung 2.1. Adaptive mobile Informationsbereitstellung auf dem Smartphone am Beispiel des Spiels Pokémon Go5
+2.2.2. Smart Glasses
+Due (2015) definiert drei Kategorien der Einsatzmöglichkeiten von Smart Glasses [30]:
+1. Berufsbezogene Anwendungen – zum Beispiel die Anzeige von Bedienungsanleitungen und anderen arbeitsplatzspezifischen Ressourcen
+2. Aufgabenbezogene Anwendungen – zum Beispiel Unterstützung sportlicher Aktivitäten oder Dokumentation wichtiger Lebensereignisse
+3. Lebensstilbezogene Anwendungen – Anwendungen, die darauf abzielen, das Nutzerverhalten gemäß den Anforderungen des so genannten Quantified Self 6 zu quantifizieren
+Laut Due werden Smart Glasses zunächst in institutionellen Kontexten wie zum Beispiel im Gesundheitswesen verfügbar sein, bevor sie zum Alltag übergehen. In der Gesundheitspflege sind bereits Foto- und Videodokumentationen, Analysen elektronischer Krankenakten, Schnelldiagnosen, Prozesskontrollen, Digitalisieren von Patientendaten, Telemedizin, Live-Übertragung und die Visualisierung von Körperteilen bekannt [1], [30], [31].
+Im Jahr 2014 wurde das Modell Google Glass von Google LLC mit der Intention auf den Markt gebracht, es im Arbeitsalltag einzusetzen. Ausgestattet mit einer Kamera, Touchpad, Bluetooth und Android-Betriebssystem ermöglichen die Brillen viele Funktionen von üblichen Android Geräten freihändig zu nutzen [32] (siehe Abbildung 2.2). Das Modell Glass Enterprise Edition 2 verfügt über einen Beschleunigungsmesser, ein Gyroskop und einen Magnetometer, die zur direkten Bereitstellung adaptiver Informationen verwendet werden können. Darüber hinaus besteht das System aus [33]:
+o Ein-Chip-System Qualcomm Snapdragon XR1,
+o Betriebssystem Android Open Source Project 8.1 (Oreo), o WLAN, Bluetooth 5.0
+5 Bildquelle: The Straits Times, 2021 [29]
+6 Quantified Self - ein Lebensstil-Konzept, bei dem digitale Geräte verschiedene Daten bereitstellen, um das menschliche Verhalten, Leistungs- und Gesundheitskontrolle zu verbessern
+ 7
+
+o Mikrofonen,Lautsprecher,Touchpad
+o Bildschirm 640 x 360 RGB-Pixel
+o Batterie800mA⋅h
+o USB-Porte zum Aufladen und Datenübertragung
+Abbildung 2.2. Schematische Darstellung der Hauptkomponenten von Google Glass [34]
+2.2.3. Andere Geräte
+Tablets sind tragbare Rechner mit einem breiten Anwendungsspektrum, deren Hauptmerkmal ein großer Touchscreen ist. Zu den populärsten Betriebssystemen gehören Android, iOS, iPadOS 7 und Windows 10. Laut IDC Worldwide Quarterly PCD Tracker hatte das iPad von Apple im Jahr 2020 mit 36,5 % den größten Anteil am Tablet-Markt [35].
+VR-Headsets8 sind Near-To-Eye-Display Geräte, die vor allem zum Spielen verwendet werden. Durch die Abdeckung des gesamten Sichtfelds des Benutzers sind sie außerdem für Schulungen, Anschauen von Filmen, Videokonferenzen und andere Simulationen geeignet [36].
+Smartwatch ist eine elektronische Armbanduhr, die über umfangreiche Zusatzfunktionen und Sensoren verfügt [37]. Die Anwendungsbereiche betreffen vor allem die Unterstützung beim Sport oder die Bereitstellung von Gesundheitsinformationen (zum Beispiel durch Pulsmessung). Weitere wichtige Funktionen sind auch Benachrichtigungen, Erinnerungsfunktionen, Aktivitätserkennung, Zeiterfassung und Zeitablesung. Manchmal werden ähnliche Geräte mit Sport-Apps auch als Smartbands oder Activity Tracker bezeichnet.
+7 Existiert seit 2019, als umbenannte Variante des bisherigen iOS für iPad 8 Auch bekannt als Virtual-Reality-Brille oder Virtual-Reality-Helmet
+  8
+
+Andere Produkte mit besonderen AMIP-bezogenen Funktionen sind Smart Clothes9, also Textilien die mit elektronischen Mechanismen ausgestattet sind. Bekannte Anwendungsgebiete sind die Gesundheitsüberwachung, die Aktivitätserkennung und die Unterstützung von menschlichen Bewegungen. Smart Clothes können sowohl die Funktionen der Bereitstellung (Sensorik) als auch die Funktionen der Nutzung (durch Bewegungsunterstützung) von adaptiven mobilen Informationen besitzen [38], [39].
+Abbildung 2.3. Beispielsmodelle der kontextsensitiven Plattformen. Von links: ein Tablet, ein VR- Headset und eine Smartwatch10
+Die Verwendung von adaptiven mobilen Informationsbereitstellung trifft also auf unterschiedliche Arten und Anwendungsbereiche. Über die Hälfte der Weltbevölkerung besitzt bereits ein Smartphone. Die Smart Glasses sind eine zukunftsweisende kontextsensitive Plattform mit zunehmender Beliebtheit in der berufsbezogenen Nutzung. Verschiedene andere Geräten für AMIP sind im heutigen Alltag bekannt. Abbildung 2.3 stellt die ausgewählten Plattformen dar.
+  9 Smart Clothes, auch Smart Textiles oder E-Textiles genannt – aus dem Englischen „schlaue Kleidungsstücke“ 10 Bildquellen: Intel 2021 [40] (Lizenz: CC BY-ND 2.0 [41]), Palmero 2015 [42] und Dambrāns 2013 [43] (beide CC BY 2.0 [44])
+9
+
+3. Indoor Positioning
+Die Positionierung in Innenräumen stellt heute eine komplexe technische Herausforderung dar. Trotz der großen Menge an fähigen Sensortechnologien, die jeweils unterschiedliche Stärken und Schwächen aufweisen, gibt es dennoch für viele Anwendungsbedürfnisse keine ausreichende Lösung. Im Vergleich zur Positionierung im Außenräumen gibt es einerseits eine Anzahl von Schwierigkeiten, wie zum Beispiel die Häufigkeit unzugänglicher Lines-of-Sight, andererseits gibt es Erleichterungen, wie zum Beispiel kleine Wettereinflüsse. Allerdings bietet bisher kein Indoor Positioning System eine vergleichbar gute Leistung in Bezug auf Genauigkeit, Latenzzeit, Erfassungsbereich, Verfügbarkeit und Nutzerkosten wie das globales Navigationssatellitensystem (GNSS) in seinem funktionalen Bereich [12], [16].
+3.1. Begriffsklärung
+3.1.1. Indoor Positioning
+Mit dem Begriff Indoor Positioning, Indoor Locating bzw. Positionierung in Innenräumen ist im Rahmen dieser Arbeit ein Mechanismus zur Bestimmung der Position eines Objekts mittels Sensoren und Kommunikationstechnologien in Räumen, in denen GNSS scheitert, zu verstehen. Obwohl der wortwörtliches Sinn des Begriffs auf Innenräumen (indoor vom Englischen Innenbereich) verweist, wird in der Regel die Definition in der Literatur auch auf die Positionierung in anderen schwer zugänglichen Umgebungen, wie beispielsweise dichten Wäldern, erweitert [12], [16]. Als Indoor Positioning Technologie sind spezifische Methoden definiert, die zur Analyse von physikalischen Signalen verwendet werden, um die Ziele eines Indoor Positioning Systems zu realisieren.
+Der Begriff Navigation bedeutet, je nach Kontext, eine Bestimmung von Position, Geschwindigkeit und Richtung eines Objektes, eine Suche nach einem optimalen Weg oder eine Führung entlang eines vorgegebenen Weges.
+3.1.2. Definitionen der wichtigsten Parameter
+Genauigkeit oder Messunsicherheit ist in Bezug auf Indoor Positioning die Differenz zwischen der angegebenen und der tatsächlichen Position.
+Erfassungsbereich ist der räumliche Bereich oder die Reichweite, innerhalb derer ein einzelner Knoten des Systems (üblicherweise ein Beacon) ein Objekt lokalisieren kann.
+Als Kosten definiert ist die Summe der Zeitkosten für die Installation und Administration des Systems, der Investitionskosten, der Instandhaltungskosten und der Kosten der Platzbelegung.
+3.1.3. Globales Navigationssatellitensystem
+Ein globales Satellitennavigationssystem (GNSS) ist ein System, das Weltraumsatelliten für Navigationszwecke nutzt. Dazu gehört das am weitesten verbreitete Global Positioning System (GPS),
+10
+
+welches vom US-Verteidigungsministerium entwickelt wurde und seit Mitte der 1990er-Jahre voll funktionsfähig ist [45]. Heute dient es unter anderem zur Positionierung der meisten Mobiltelefone.
+3.1.4. Received signal strength indication (RSSI)
+Das RSSI, also Received signal strength indication11, ist ein Indikator für die Stärke (nicht die Qualität) eines empfangenen Signals in einer drahtlosen Umgebung. Es kann zur Bestimmung der relativen Entfernung zwischen dem Sender und dem Empfänger verwendet werden. Die am meisten verwendete Einheit ist Dezibel Milliwatt (dBm) [46, S. 160].
+3.1.5. Line-of-Sight
+Mit dem Begriff Line-of-Sight12 ist eine gerade Linie zwischen einem Signalsender und einem Signalempfänger (üblicherweise durch die Luft) gemeint, die eine Kommunikation auf direktem Weg ermöglicht. Lines-of-Sight sind hauptsächlich bei kamerabasierten Positionierungstechniken relevant.
+3.1.6. Ankerpunkt, Beacon
+Mit dem Begriff Ankerpunkt13 wird im Kontext der Indoor Positioning eine bekannte, feste Position bezeichnet. In der Regel werden diese Punkte physisch durch Markierungen oder Geräte dargestellt und an einer konkreten Stelle platziert. Der Begriff Beacon bezieht sich an Ankerpunkte, die Signale an ein Positionierungssystem senden.
+3.1.7. Point of Interest
+Ein Point of Interest ist ein Punkt im Raum, der nützlich oder bemerkenswert ist. Es kann zum Beispiel ein Zimmer, ein Bett, ein Parkplatz, ein Berggipfel oder eine gefährliche Stelle auf einer Autostrecke sein. Unter der Annahme, dass sich die Points of Interest in einer festen Position befinden, können sie als eine Art von Ankerpunkten betrachtet werden.
+3.2. Methoden
+Der gesamte Prozess der Indoor Positioning kann in drei Phasen unterteilt werden [12]:
+1. Evidenz – bei dem die beteiligten Geräte die Eigenschaften des Eingangssignals messen
+2. Entfernungsschätzung - bei der die Distanzen zwischen Signalsender und Signalempfänger
+berechnet werden
+3. Positionsbestimmung – bei der die Position berechnet und bestimmt wird
+Im folgenden Abschnitt werden, basierend auf der Literatur [12], [16], die wichtigsten Prinzipien der dritten Phase erläutert. Die Positionsbestimmung kann nach mehreren dieser Prinzipien gleichzeitig erfolgen.
+11 Direkte Übersetzung aus dem Englischen: Indikator der empfangenen Signalstärke 12 Direkte Übersetzung aus dem Englischen: Sichtlinie
+13 In englischsprachiger Literatur: Anchor Node
+ 11
+
+3.2.1. Cell of Origin
+Die Cell of Origin ist eine triviale Positionierungsmethode bei der ermittelt wird, welchem der Ankerpunkte ein mobiles Objekt am nächsten ist. Das Prinzip dient dazu, die Anwesenheit eines Geräts innerhalb eines bestimmten Bereichs, zum Beispiel innerhalb einer Zimmerfläche, zu identifizieren. Die Genauigkeit der Methode hängt von der Dichte der Ankerpunkte ab. Im 2D-Raum bildet die Verteilung der Ankerpunkte eine Zellenstruktur, bei der jede Zelle mit genau einem Ankerpunkt in Beziehung steht. Die Zellen stellen Bereiche dar, in denen der Ankerpunkt aus der Beziehung der nächstgelegene Ankerpunkt ist. Die Zellen werden gemäß der Mittelsenkrechten der Strecken zwischen den Ankerpunkten bestimmt. Ein Beispiel solcher Bestimmung ist in Abbildung 3.1 dargestellt.
+Abbildung 3.1. Bestimmung von vier Cell of Origin-Zellen auf einer Ebene in Bezug auf die Ankerpunkte A, B, C und D
+3.2.2. Lateration
+Unter Lateration versteht man die Positionsbestimmung anhand einer geschätzten Entfernung zu mehreren Ankerpunkten. Im 2D-Raum lässt sich die Position aus geometrischer Sicht durch die Kenntnis von drei dieser Abstände eindeutig bestimmen. Im 3D-Raum müssen die Entfernungen zu vier Ankerpunkten bekannt sein. Deswegen werden die Verfahren alternativ auch als Trilateration bzw. Multilateration bezeichnet.
+ 12
+
+ Abbildung 3.2. Trilateration auf einer Ebene [47]
+Das Prinzip der Positionierungsmethode ist in der Abbildung 3.2 dargestellt. Darin sind mit 𝑃1, 𝑃2, 𝑃3 Beacons und mit 𝑟1, 𝑟2, 𝑟3 die entsprechende Entfernungen von ihnen zur gesuchten Position im 2D-Raum gekennzeichnet. Die Kenntnis des Wertes 𝑟1 beschränkt die mögliche Position zum roten Umkreis. Zusätzliche Kenntnis des Wertes 𝑟2 beschränkt ihn auf die Menge {𝐴, 𝐵}. Letztendlich die zusätzliche Kenntnis des Wertes 𝑟3 ermöglicht es, den Punkt 𝐵 eindeutig als die gesuchte Position zu identifizieren.
+Seien die Ankerpunkte 𝑃1 = (𝑎, 𝑏), 𝑃2 = (𝑐, 𝑑), 𝑃3 = (𝑒, 𝑓) sowie deren Entfernungen 𝑟1, 𝑟2, 𝑟3 in einem 2D-Koordinatensystem bekannt, dann ist der gesuchte Punkt (𝑥, 𝑦) algebraisch durch ein Gleichungssystem (Formel 3.1) lösbar.
+(𝑥−𝑎)2 +(𝑦−𝑏)2 =𝑟12 {(𝑥−𝑐)2 +(𝑦−𝑑)2 = 𝑟22 (𝑥−𝑒)2 +(𝑦−𝑓)2 =𝑟32
+Formel 3.1. Gleichungssystem zur Berechnung der Position (𝑥, 𝑦) durch Trilateration
+Wenn im 3D-Raum die gesuchte Position nicht auf der durch 𝑃1, 𝑃2, 𝑃3 erzeugten Fläche liegt, reicht die Kenntnis der Werte 𝑟1, 𝑟2, 𝑟3 ist nicht aus, um eine Position eindeutig zu bestimmen. Die Lösung wird stattdessen auf zwei mögliche Punkte begrenzt. Geometrisch gesehen beschränkt jedes Beacon die potenzielle Lösung auf eine Sphäre. Mehrere Sphären erzeugen im Schnitt Kreise, die ihrerseits als Schnitt zwei Punkte bilden (siehe Abbildung 3.3).
+13
+
+ Abbildung 3.3. Lateration im 3D-Raum, Ermittlung der Menge {𝐴, 𝐵} anhand der bekannten Entfernung zu den Beacons 𝑃1, 𝑃2, 𝑃3
+Seien die Beacons 𝑃1 = (𝑎, 𝑏, 𝑐) , 𝑃2 = (𝑑, 𝑒, 𝑓) , 𝑃3 = (𝑔, h, 𝑖) sowie deren Entfernungen 𝑟1, 𝑟2, 𝑟3 im 3D-Koordinatensystem bekannt, dann ist die Menge der zwei Punkten (𝑥, 𝑦, 𝑧) algebraisch durch ein Gleichungssystem (Formel 3.2) ermittelbar.
+(𝑥−𝑎)2 +(𝑦−𝑏)2 +(𝑧 − 𝑐)2 =𝑟12 {(𝑥−𝑑)2 +(𝑦−𝑒)2 +(𝑧 − 𝑓)2 = 𝑟22 (𝑥−𝑔)2 +(𝑦−h)2 +(𝑧 − 𝑖)2 =𝑟32
+Formel 3.2. Gleichungssystem zur Ermittlung der Menge von zwei potenziellen Positionen (𝑥, 𝑦, 𝑧) durch Trilateration im 3D-Raum
+3.2.3. Andere Methoden
+Je nach Anwendungsfall sind verschiedene andere Methoden der Positionsbestimmung verbreitet. Angle of Departure ist eine Positionierung durch Analyse von dem Winkel, unter dem die Signale den Sensor erreichen. Centroid Determination ist eine Annäherung an eine Position, bei der der Mittelpunkt des durch die erreichbaren Beacons gebildeten Polygons berechnet wird. Polar Point Method basiert auf der gleichzeitigen Messung von Entfernung und Winkel, um die Position eines Objekts mittels einer oder mehrerer Stationen zu bestimmen.
+Dead Reckoning realisiert Positionsbestimmung anhand der Kenntnis der vorherigen Positionen, der Geschwindigkeit und Richtung. Als Hauptsensor wird da ein Trägheitsnavigationssystem verwendet. Sollte es notwendig sein, Messrauschen und Signalausbreitungsstörungen zu kompensieren, wird ein adaptiver Filteralgorithmus wie zum Beispiel das Kalman-Filter verwendet.
+14
+
+          3.3. Technologien
+Im folgenden Kapitel wird zunächst ein Überblick über die Kategorisierung und die Merkmale der wichtigsten Indoor Positioning Technologien gegeben, gefolgt von der Beschreibung der ausgewählten Technologien auf Basis der Literatur [12], [16].
+Es gibt keine universellen Lösungen für ein Indoor Positioning System zur allgemeinen Verwendung. Je nach Anwendung können verschiedene Techniken und Geräte mit besserer Leistung eingesetzt werden. Tabelle 3.1 fasst die bekanntesten Indoor Positioning Technologien gemäß [10]–[12], [16], [48] zusammen. Um die Technologiebreite zu strukturieren, schlagen Brena et al. (2017) [12] eine Klassifizierung von Indoor Positioning Technologien nach der Art des verwendeten Signals in vier Kategorien vor:
+1. Funkfrequenzsignale – die gängigste Kategorie der Technologien, die sich auf die Frequenz von Funksignalen, hauptsächlich zwischen 2 und 5 GHz, bezieht. Beispiele für Technologien sind WLAN, Bluetooth und ZigBee.
+2. Lichtsignale – optische Technologien in Form von elektromagnetischer Strahlung. Seine Besonderheit ist die Funktionseinschränkung aufgrund von Lines-of-Sight.
+3. Schallsignale – Technologien, die Schallsignale verwenden. Der Schall breitet sich langsamer aus als elektromagnetische Signale, so dass sich die Laufzeit einfacher messen lässt.
+4. Passive Technologien – Technologien, die sich auf natürlich vorkommende Signale beziehen, wie z. B. auf magnetische Felder.
+     Technologie
+Bluetooth
+RFID
+akustischer Klang
+3.3.1. Wireless Local Area Network
+Wireless Local Area Network (WLAN) ist eine Technologie für eine Kommunikation mittels elektromagnetischer Wellen. WLAN-basierte Indoor Positioning ist das am weitesten verbreitete
+Genauigkeit
+30 - 300 cm
+10 - 500 cm
+1 cm - 1 m
+Erfassungsbereich
+ein Gebäude
+ein Zimmer
+ein Zimmer
+Kosten
+kleine
+hohe Installationskosten, kleine Endnutzerkosten
+mehrere Stufen
+Kategorie
+Funkfrequenzsignale
+Funkfrequenzsignale
+Schallsignale
+  WLAN
+   1 -2 m
+   ein Gebäude
+   kleine
+   Funkfrequenzsignale
+   ZigBee
+   25 cm
+   ein Gebäude
+   kleine Installationskosten, hohe Endnutzerkosten
+   Funkfrequenzsignale
+   UWB
+   12 cm
+   ein Gebäude
+   große
+   Funkfrequenzsignale
+   Pseudolites
+   5 - 10 cm
+   10 – 1000 m
+   große
+   Funkfrequenzsignale
+ Trägheits- navigation
+–
+Tabelle 3.1. Ausgewählte Indoor Positioning Technologien und ihre typischen Parameterwerte
+1 -2 m
+kleine
+Passive Technologien
+     15
+
+System für Indoor Positioning. WLAN-Zugangspunkte sind in vielen Innenräumen leicht zugänglich und bieten kabellose Konnektivität innerhalb von ca. 50 m, was vorteilhaft beispielsweise im Vergleich zu Bluetooth oder RFID Technologien ist. Eine häufig verwendete Methode ist die Entfernungsmessung mittels RSSI.
