@@ -24,7 +24,7 @@ parser = argparse.ArgumentParser(
         )
 parser.add_argument("--file", required=True, dest="file", help="select file to analyze")
 parser.add_argument("--exclude", dest="stopwords", help="use this file to exclude words")
-parser.add_argument("--lyx", action='store_true', help="if set, only text inside /begin_layout and /end_layout is scanned")
+#parser.add_argument("--lyx", action='store_true', help="if set, only text inside /begin_layout and /end_layout is scanned")
 parser.add_argument("--limit", type=int, dest='limit', default=100, help="set limit for table output, default=100")
 parser.add_argument("-v", action='count', default=0, dest="verbose", help="Verbose output; -v default, -vv more output, -vvv maximum output")
 
