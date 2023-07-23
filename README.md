@@ -1,4 +1,4 @@
-# word_frequencies
+# count word frequencies
 count words and frequencies inside a file.
 
 This little script is used to check bachelor and master thesis against often used words 
